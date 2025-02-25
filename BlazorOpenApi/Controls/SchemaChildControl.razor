@@ -1,0 +1,108 @@
+﻿@using Microsoft.OpenApi.Models
+
+@if ( Value != null )
+{
+    <tr>
+        <td>
+            @if (Value.Type == "array")
+            {
+                <Expander HeaderClass="s-type" Class="s-bg-odd" Title="@ArrayText">
+                    <div class="s-nested">
+                        <SchemaControl Value="@Value.Items" />
+                    </div>
+                </Expander>
+            }
+            else if (Value.Type == "object")
+            {
+                <Expander HeaderClass="s-type" Class="s-bg-odd" Title="@ObjectText">
+                    <div class="s-props s-nested">
+                        <table class="schema">
+                            @foreach (var p in Value.Properties)
+                            {
+                                <SchemaChildControl Value="@p.Value" Title="@p.Key" Required="@IsRequired(p.Key)" />
+                            }
+                        </table>
+                    </div>
+                </Expander>
+            }
+            else
+            {
+                <div>
+                    <Text Value="@TypeText" Class="s-type" />
+                </div>
+            }
+        </td>
+        <td>
+            <Text Class="s-title" Value="@TitleText" />
+        </td>
+        <td>
+            <IndicatorControl Name="Required" Value="@Required" Class="i-required" />
+            <IndicatorControl Name="Deprecated" Value="@Value.Deprecated" Class="i-deprecated" />
+        </td>
+        <td>
+            <MarkdownControl Value="@Value.Description" />
+        </td>
+        <td>
+            @if (Value.AdditionalPropertiesAllowed && Value.AdditionalProperties != null)
+            {
+                <div class="s-additional-props">
+                    <SchemaControl Value="@Value.AdditionalProperties" />
+                </div>
+            }
+
+            <DiscriminatorControl Value="@Value.Discriminator" />
+            <ExampleControl Value="@Value.Example" />
+        </td>
+    </tr>
+}
+
+@code {
+    [Parameter]
+    public OpenApiSchema? Value { get; set; }
+    [Parameter]
+    public string? Title { get; set; }
+    [Parameter]
+    public bool Required { get; set; }
+
+    private string TitleText => (string.IsNullOrWhiteSpace(Title) ? Value?.Title : Title) ?? "";
+
+    private string ArrayText 
+    {
+        get
+        {
+            if (Value?.Type != "array")
+                return "";
+
+            var nullable = Value.Nullable ? "?" : "";
+            var itemsType = $"{Value.Items?.Type ?? "-string-"}{nullable}";
+
+            if (Value.MinItems != null || Value.MaxItems != null)
+                return $"{itemsType} [{(Value.MinItems == null ? "" : Value.MinItems.Value)}..{(Value.MaxItems == null ? "" : Value.MaxItems.Value)}]";
+            return $"{itemsType} []";
+        }
+    }
+
+    private string ObjectText
+    {
+        get
+        {
+            if (Value?.Type != "object")
+                return "";
+            var nullable = Value.Nullable ? "?" : "";
+            if (Value.MinProperties != null || Value.MaxProperties != null)
+                return $"object{nullable} {{{(Value.MinProperties == null ? "" : Value.MinProperties.Value)}..{(Value.MaxProperties == null ? "" : Value.MaxProperties.Value)}}}";
+            return $"object{nullable}";
+        }
+    }
+
+    private string TypeText
+    {
+        get
+        {
+            var nullable = (Value?.Nullable ?? false) ? "?" : "";
+            return $"{Value?.Format ?? "string"}{nullable}";
+        }
+    }
+
+    private bool IsRequired(string name) => Value?.Required.Contains(name) ?? false;
+}

@@ -1,0 +1,25 @@
+﻿@page "/openapi-ui"
+
+@using BlazorOpenApi;
+
+<PageTitle>OpenApiUI</PageTitle>
+
+@* <OpenAPIUIControl Url="@Url" Palette="@TestPalette"/> *@
+<OpenAPIUIControl Url="@Url" />
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "url")]
+    public string Url { get; set; } = "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json";
+
+    // private OpenApiUiPalette TestPalette
+    // {
+    //     get
+    //     {
+    //         var p = new OpenApiUiPalette().Clone();
+    //         p.Foreground[7] = "blue";
+
+    //         return p;
+    //     }
+    // }
+}

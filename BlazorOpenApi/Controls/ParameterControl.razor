@@ -1,0 +1,59 @@
+﻿@using System.Text.Json
+@using Microsoft.OpenApi.Models
+@using Microsoft.OpenApi.Readers
+
+@if (Value != null)
+{
+    <tr>
+        <td>
+            <SchemaControl Value="@Value.Schema" />
+        </td>
+        <td>
+            <div class="p-attrs">
+                <div class="p-name">@Value.Name</div>
+            </div>
+        </td>
+        <td>
+            <div class="p-attrs">
+                <div class="p-in @InClass(Value)">@Value.In</div>
+            </div>
+        </td>
+        <td>
+            <div class="p-attrs">
+                <ParameterStyleControl Value="@Value.Style" />
+            </div>
+        </td>
+        <td>
+            <div class="p-attrs">
+                <div class="p-indicators">
+                    <IndicatorControl Name="Deprecated" Value="@Value.Deprecated" Class="i-deprecated" />
+                    <IndicatorControl Name="Required" Value="@Value.Required" Class="i-required"/>
+                    <IndicatorControl Name="AllowEmptyValue" Value="@Value.AllowEmptyValue" />
+                    <IndicatorControl Name="AllowReserved" Value="@Value.AllowReserved" />
+                    <IndicatorControl Name="Explode" Value="@Value.Explode" />
+                </div>
+            </div>
+        </td>
+        <td>
+            <div class="p-body">
+                <MarkdownControl Value="@Value.Description" />
+                <ExampleControl Value="@Value.Example" />
+                @if (Value.Examples.Count > 0)
+                {
+                    foreach (var (n, v) in Value.Examples)
+                    {
+                        <ExampleControl Example="@v" Name="@n" />
+                    }
+                }
+            </div>
+        </td>
+    </tr>
+}
+
+@code {
+    [Parameter]
+    public OpenApiParameter? Value { get; set; }
+
+    private string InClass(OpenApiParameter p) => Value == null ? "" : $"p-in-{p?.In?.ToString()?.ToLower()}";
+
+}

@@ -1,0 +1,13 @@
+﻿@using Microsoft.OpenApi.Models
+
+@if ( Value != null )
+{
+    <div class="p-style @StyleClass">@Value</div>
+}
+
+@code {
+    [Parameter]
+    public ParameterStyle? Value { get; set; }
+
+    private string StyleClass => Value == null ? "" : $"p-style-{Value.ToString()?.ToLower()}";
+}

@@ -1,0 +1,35 @@
+@using Microsoft.OpenApi.Models
+
+@if (Value?.Count > 0)
+{
+    <div class="responses">
+        <div class="r-title">Responces</div>
+        <table>
+        @foreach (var (name, val) in Value)
+        {
+            <tr>
+                <td><div class="r-name @GetClass(name)">@name</div></td>
+                <td>
+                    <ResponseControl Value="@val"/>
+                </td>
+                </tr>
+        }
+        </table>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public IDictionary<string, OpenApiResponse>? Value { get; set; }
+
+    private static string GetClass(string name)
+    {
+        if (name.StartsWith("2"))
+            return "r-success";
+        if (name.StartsWith("4"))
+            return "r-auth";
+        if (name.StartsWith("5"))
+            return "r-error";
+        return "";
+    }
+}

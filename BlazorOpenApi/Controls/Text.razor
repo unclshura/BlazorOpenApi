@@ -1,0 +1,11 @@
+﻿@if (!string.IsNullOrWhiteSpace(Value))
+{
+    <div class="@Class">@Value</div>
+}
+
+@code {
+    [Parameter]
+    public string? Value { get; set; }
+    [Parameter]
+    public string? Class { get; set; }
+}

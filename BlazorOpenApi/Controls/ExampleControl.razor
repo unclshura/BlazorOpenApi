@@ -1,0 +1,46 @@
+﻿@using Microsoft.OpenApi.Any
+@using Microsoft.OpenApi.Models
+
+@if (Value != null || Example != null )
+{
+    <div class="e-title">
+        @if (!string.IsNullOrWhiteSpace(Name))
+        {
+            <span class="e-name">@Name</span>
+            @if (!string.IsNullOrWhiteSpace(Example?.Summary))
+            {
+                <span class="spacer">-</span>
+            }
+        }
+        @if ( !string.IsNullOrWhiteSpace(Example?.Summary) )
+        {
+            <span>@Example.Summary </span>
+        }
+    </div>
+
+    if (Example != null)
+    {
+        <MarkdownControl Value="@Example.Description"/>
+    }
+}
+
+@code {
+    [Parameter]
+    public IOpenApiAny? Value { get; set; }
+    [Parameter]
+    public string? Name { get; set; }
+
+    [Parameter]
+    public OpenApiExample? Example { get; set; }
+
+    public IOpenApiAny? Ex => Example != null ? Example.Value : Value;
+/*
+    @if (Ex != null)
+    {
+        <div class="example">
+            <AnyControl Value="@Ex"/>
+        </div>
+    }
+ 
+ */
+}

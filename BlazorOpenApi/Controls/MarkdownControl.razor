@@ -1,0 +1,9 @@
+﻿@if (!string.IsNullOrWhiteSpace(Value))
+{
+    <div class="markdown">@ApiUtils.MarkdownToHtml(Value)</div>
+}
+
+@code {
+    [Parameter]
+    public string? Value { get; set; }
+}

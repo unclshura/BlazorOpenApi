@@ -1,0 +1,34 @@
+﻿@using System.Text.Json
+@using Microsoft.OpenApi.Models
+@using Microsoft.OpenApi.Readers
+
+@if (Value?.Count > 0)
+{
+    <table class="op-params parameter">
+        @foreach (var p in Value)
+        {
+            <ParameterControl Value="@GetResolvedReference(p)"/>
+        }
+    </table>
+}
+
+@code {
+    [Parameter]
+    public IList<OpenApiParameter>? Value { get; set; }
+
+    [CascadingParameter]
+    public OpenApiDocument? Api { get; set; }
+
+    private OpenApiParameter? GetResolvedReference(OpenApiParameter p)
+    {
+        if (p == null)
+            return null;
+        if (!p.UnresolvedReference || p.Reference == null || Api == null)
+            return p;
+
+        if (!Api.Components.Parameters.TryGetValue(p.Reference.Id, out var resolved))
+            return p;
+
+        return resolved;
+    }
+}

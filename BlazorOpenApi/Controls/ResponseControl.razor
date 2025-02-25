@@ -1,0 +1,121 @@
+@using Microsoft.OpenApi.Models
+
+@if (ResolvedValue != null)
+{
+    <div class="response">
+        <MarkdownControl Value="@ResolvedValue.Description" />
+
+        @if (ResolvedValue.Headers.Count > 0)
+        {
+            <table>
+                @foreach (var (key, val) in ResolvedValue.Headers)
+                {
+                    <tr>
+                        <td class="p-name">@key</td>
+                        <td>
+                            <div class="parameter">
+                                <div class="p-attrs">
+                                    <ParameterStyleControl Value="@val.Style" />
+                                    <div class="p-indicators">
+                                        <IndicatorControl Name="Deprecated" Value="@val.Deprecated" Class="i-deprecated" />
+                                        <IndicatorControl Name="Required" Value="@val.Required" Class="i-required" />
+                                        <IndicatorControl Name="AllowEmptyResolvedValue" Value="@val.AllowEmptyValue" />
+                                        <IndicatorControl Name="AllowReserved" Value="@val.AllowReserved" />
+                                        <IndicatorControl Name="Explode" Value="@val.Explode" />
+                                    </div>
+                                </div>
+
+                                <div class="p-body">
+                                    <SchemaControl Value="@val.Schema" />
+
+                                    @if (val.Content.Count > 0)
+                                    {
+                                        <table>
+                                            @foreach (var (k, v) in val.Content)
+                                            {
+                                                <tr>
+                                                    <td>@k</td>
+                                                    <td>
+                                                        <SchemaControl Value="@v.Schema" />
+                                                        @if (v.Encoding.Count > 0)
+                                                        {
+                                                            <table class="r-encoding">
+                                                                @foreach (var (ename, eval) in v.Encoding)
+                                                                {
+                                                                    <tr>
+                                                                        <td>
+                                                                            <div class="e-name">@ename</div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="e-name">@eval.ContentType</div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <ParameterStyleControl Value="@eval.Style" />
+                                                                        </td>
+
+                                                                    </tr>
+                                                                }
+                                                            </table>
+                                                        }
+                                                        <ExampleControl Value="@v.Example" />
+                                                        @foreach (var (ename, eval) in val.Examples)
+                                                        {
+                                                            <ExampleControl Example="@eval" Name="@ename" />
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    }
+
+                                    <ExampleControl Value="@val.Example" />
+                                    @if (val.Examples.Count > 0)
+                                    {
+                                        foreach (var (n, v) in val.Examples)
+                                        {
+                                            <ExampleControl Example="@v" Name="@n" />
+                                        }
+                                    }
+                                    <MarkdownControl Value="@val.Description" />
+                                </div>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        @if ( ResolvedValue.Content.Count > 0 )
+        {
+            @foreach (var (key, val) in ResolvedValue.Content)
+            {
+                <div class="p-name">@key</div>
+                <div class="p-body">
+                    <SchemaControl Value="@val.Schema"/>
+                </div>
+                
+            }
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public OpenApiResponse? Value { get; set; }
+
+    [CascadingParameter]
+    public OpenApiDocument? Api { get; set; }
+
+    private OpenApiResponse? ResolvedValue
+    {
+        get
+        {
+            if (Value?.Reference == null || Api == null || Value?.UnresolvedReference != true)
+                return Value;
+
+            if (!Api.Components.Responses.TryGetValue(Value.Reference.Id, out var resolved))
+                return Value;
+            return resolved;
+        }
+    }
+}

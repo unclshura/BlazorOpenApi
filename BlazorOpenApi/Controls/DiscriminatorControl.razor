@@ -1,0 +1,30 @@
+﻿@using Microsoft.OpenApi.Models
+
+@if (Value != null)
+{
+    <div class="descriminator">
+        <Text Value="@Value.PropertyName" />
+        <table>
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Value.Mapping)
+                {
+                    <tr>
+                        <td>@item.Key</td>
+                        <td>@item.Value</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public OpenApiDiscriminator? Value { get; set; }
+}

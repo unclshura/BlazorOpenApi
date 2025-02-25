@@ -1,0 +1,58 @@
+﻿@page "/"
+@inject NavigationManager Navigation
+
+<PageTitle>Index</PageTitle>
+@*
+<MudText Typo="Typo.h3" GutterBottom="true">Hello, world!</MudText>
+<MudText Class="mb-8">Welcome to your new app, powered by MudBlazor!</MudText>
+<MudAlert Severity="Severity.Normal">You can find documentation and examples on our website here: <MudLink Href="https://mudblazor.com" Typo="Typo.body2" Color="Color.Inherit"><b>www.mudblazor.com</b></MudLink></MudAlert>
+
+<MudLink Href="/api-docs/index.html" Typo="Typo.body2" Color="Color.Inherit">/api-docs/index.html</MudLink>
+*@
+
+@*
+<iframe src="/api-docs/index.html" style="width:100%;height:93vh;border:none;" />
+*@
+
+<MudList>
+    <MudListItem>
+        <MudLink Href="@(GetUrl("https://redocly.github.io/redoc/openapi.yaml"))">ReDoc version</MudLink>
+    </MudListItem>
+    <MudListItem>
+        <MudLink Href="@(GetUrl("https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json"))">GitHub version</MudLink>
+    </MudListItem>
+</MudList>
+
+<MudCard>
+    <MudForm Model="@model">
+        <MudCardContent>
+            <MudTextField @bind-Value="model.Url"
+                          For="@(() => model.Url)"
+                          Immediate="true"
+                          Label="Url" />
+
+        </MudCardContent>
+    </MudForm>
+    <MudCardActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@Submit">Display</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+
+    private static string GetUrl(string url) => "openapi-ui?url=" + Uri.UnescapeDataString(url);
+
+    UrlModel model = new UrlModel();
+
+    public class UrlModel
+    {
+        public string Url { get; set; } = "";
+    }
+
+    private Task Submit()
+    {
+        Navigation.NavigateTo(GetUrl(model.Url));
+        return Task.CompletedTask;
+    }
+
+}

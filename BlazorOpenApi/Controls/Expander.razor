@@ -1,0 +1,43 @@
+﻿<div class="expander @Class">
+    <div class="ex-header @HeaderClass">
+        @Title
+        <div onclick="@(() => Toggle())">
+            @if (Collapsed)
+            {
+                <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 9L12 15L6 9" stroke="var(--oa-fg-lighter)" stroke-width="2" />
+                </svg>
+            }
+            else
+            {
+                <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 15L12 9L6 15" stroke="var(--oa-fg-lighter)" stroke-width="2" />
+                </svg>
+            }
+        </div>
+    </div>
+
+    @if (!Collapsed && ChildContent != null)
+    {
+        @ChildContent
+    }
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public bool Collapsed { get; set; } = true;
+    [Parameter]
+    public string Title { get; set; } = "";
+    [Parameter]
+    public string HeaderClass { get; set; } = "";
+    [Parameter]
+    public string Class { get; set; } = "";
+
+    void Toggle()
+    {
+        Collapsed = !Collapsed;
+        StateHasChanged();
+    }
+}

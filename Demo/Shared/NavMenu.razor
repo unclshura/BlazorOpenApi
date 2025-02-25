@@ -1,0 +1,28 @@
+﻿<MudNavMenu>
+    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+    
+    <MudNavLink Href="@(GetUrl("https://redocly.github.io/redoc/openapi.yaml"))"
+                Match="NavLinkMatch.All" 
+                Icon="@Icons.Material.Filled.Abc">
+        ReDoc version
+    </MudNavLink>
+    <MudNavLink Href="@(GetUrl("https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json"))"
+                Match="NavLinkMatch.All"
+                Icon="@Icons.Material.Filled.AccountBox">
+        GitHub version
+    </MudNavLink>
+    <MudNavLink Href="@(GetUrl("https://dtrnk0o2zy01c.cloudfront.net/openapi/en-us/dest/BrandMetrics_prod_3p.json"))"
+                Match="NavLinkMatch.All"
+                Icon="@Icons.Material.Filled.Cloud">
+        Amazon Brand Metrics
+    </MudNavLink>
+    <MudNavLink Href="@(GetUrl("https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/api-reference/v1.0/contracts/bcoas1.0.yaml"))"
+                Match="NavLinkMatch.All"
+                Icon="@Icons.Material.Filled.Cloud">
+        Dynamics 365 BC
+    </MudNavLink>
+</MudNavMenu>
+
+@code {
+    private static string GetUrl(string url) => "openapi-ui?url=" + Uri.UnescapeDataString(url);
+}

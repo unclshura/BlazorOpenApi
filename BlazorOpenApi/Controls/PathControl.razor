@@ -1,0 +1,44 @@
+﻿@using System.Text.Json
+@using Microsoft.OpenApi.Models
+@using Microsoft.OpenApi.Readers
+
+@if (!string.IsNullOrWhiteSpace(Key) || Value != null)
+{
+    @if (!string.IsNullOrWhiteSpace(@Value?.Summary) || !string.IsNullOrWhiteSpace(Value?.Description))
+    {
+        <div class="pa-header">
+            <h3>@Key</h3>
+            <div class="spacer">-</div>
+            <div class="pa-summary">@Value?.Summary</div>
+        </div>
+    }
+
+    <div class="path">
+        @if (Value != null)
+        {
+            <MarkdownControl Value="@Value.Description" />
+
+            if (Value.Servers?.Count > 0)
+            {
+                <ServersControl Value="@Value.Servers" />
+            }
+
+            @if (Value.Operations?.Count > 0)
+            {
+                <div class="operations">
+                    @foreach (var (key, op) in @Value.Operations.Where(x => x.Value != null))
+                    {
+                        <OperationControl Endpoint="@Key" Operation="@key" Value="@op" />
+                    }
+                </div>
+            }
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string? Key { get; set; }
+    [Parameter]
+    public OpenApiPathItem? Value { get; set; }
+}

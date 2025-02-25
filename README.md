@@ -1,0 +1,6 @@
+# Blazor OpenAPI UI
+
+`!!! DEV VERSION DO NOT USE !!!`
+
+## LICENSE
+[MIT](LICENSE)

@@ -1,0 +1,101 @@
+﻿@using System.Text.Json
+@using Microsoft.OpenApi.Models
+@using Microsoft.OpenApi.Readers
+
+@if (Palette != null )
+{
+    @PaletteStr
+}
+
+<div class="openapi-ui">
+    <CascadingValue Value="@_api">
+        <HeaderControl Value="@_api.Info" DownloadUrl="@Url"/>
+        <ServersControl Value="@_api.Servers" />
+        @if (_api.Paths?.Count > 0)
+        {
+            <h2>Endpoints</h2>
+            foreach (var path in _api.Paths)
+            {
+                if (!string.IsNullOrWhiteSpace(path.Key) || path.Value != null)
+                {
+                    <PathControl Key="@path.Key" Value="@path.Value" />
+                }
+            }
+        }
+        @if (_api.Components != null)
+        {
+            <h2>Components</h2>
+            <ComponentsControl Value="@_api.Components"/>
+        }
+    </CascadingValue>
+</div>
+
+@code {
+    [Parameter] public string Url { get; set; } = "";
+    [Parameter] public string Json { get; set; } = "";
+    [Parameter] public OpenApiUiPalette? Palette { get; set; }
+
+    private string _loadedFor = "";
+    private OpenApiDocument _api = new();
+
+    private MarkupString PaletteStr => Palette?.AsMarkupString ?? new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var loadedFromUrl  = _loadedFor == Url && !string.IsNullOrWhiteSpace(Url);
+        var loadedFromJson = _loadedFor == Json && !string.IsNullOrWhiteSpace(Json);
+        if (loadedFromUrl || loadedFromJson)
+            return;
+
+        if (!string.IsNullOrWhiteSpace(Json))
+            LoadFromJson();
+        else if (!string.IsNullOrWhiteSpace(Url))
+            await LoadFromUrl();
+
+    }
+
+    private async Task LoadFromUrl()
+    {
+        try
+        {
+            using var client = new HttpClient();
+
+            var jsonStream = await client.GetStreamAsync(Url);
+            var reader = new OpenApiStreamReader();
+            var res = await reader.ReadAsync(jsonStream);
+
+
+            if (res?.OpenApiDocument == null)
+                throw new InvalidOperationException($"Can't parse {Url}");
+
+            _api = res.OpenApiDocument;
+            _loadedFor = Url;
+            Json = "";
+        }
+        catch (Exception)
+        {
+            _loadedFor = "";
+            _api = new();
+        }
+    }
+
+    private void LoadFromJson()
+    {
+        try
+        {
+            var reader = new OpenApiStringReader();
+            var res = reader.Read(Json, out var _)
+                ?? throw new InvalidOperationException($"Can't parse Json/Yaml");
+
+            _api = res;
+
+            _loadedFor = Url;
+            // Url = ""; <-- do not set URL to ""
+        }
+        catch (Exception)
+        {
+            _loadedFor = "";
+            _api = new();
+        }
+    }
+}

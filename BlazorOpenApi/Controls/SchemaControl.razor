@@ -1,0 +1,33 @@
+﻿@using Microsoft.OpenApi.Models
+
+@if ( ResolvedValue != null )
+{
+    <table class="schema">
+        <SchemaChildControl Value="@ResolvedValue" Title="@Title" Required="@Required" />
+    </table>
+}
+
+
+@code {
+    [Parameter]
+    public OpenApiSchema? Value { get; set; }
+    [Parameter]
+    public string? Title { get; set; }
+    [Parameter]
+    public bool Required { get; set; }
+
+    [CascadingParameter]
+    public OpenApiDocument? Api { get; set; }
+
+    private OpenApiSchema? ResolvedValue
+    {
+        get
+        {
+            if (Api == null || Value?.Reference == null )
+                return Value;
+            if (!Api.Components.Schemas.TryGetValue(Value.Reference.Id, out var resolved))
+                return Value;
+            return resolved;
+        }
+    }
+}

@@ -1,0 +1,46 @@
+﻿@using Microsoft.OpenApi.Any
+
+@if (Value != null)
+{
+    <div class="e-item">
+        @switch (Value.AnyType)
+        {
+            case AnyType.Null:
+                break;
+            case AnyType.Primitive:
+                {
+                    <span>@AsPrimitive?.PrimitiveType</span>
+                }
+                break;
+            case AnyType.Array:
+                {
+                    <span>[</span>
+                    @foreach (var element in AsArray!)
+                    {
+                        <AnyControl Value="@element" />
+                    }
+                    <span>]</span>
+                }
+                break;
+            case AnyType.Object:
+                {
+                    @foreach (var element in AsObject!)
+                    {
+                        <div class="e-name">@element.Key</div>
+                        <AnyControl Value="@element.Value" />
+                    }
+                }
+                break;
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public IOpenApiAny? Value { get; set; }
+
+    private IOpenApiPrimitive? AsPrimitive => Value as IOpenApiPrimitive;
+    private OpenApiArray?      AsArray     => Value as OpenApiArray;
+    private OpenApiObject?     AsObject    => Value as OpenApiObject;
+
+}
