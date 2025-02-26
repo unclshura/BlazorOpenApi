@@ -224,7 +224,26 @@
 }
 .r-encoding{}
 
-.schema             {}
+.request {
+}
+
+.rb-body {
+}
+.rb-title {
+    font-weight: bold;
+}
+
+.mt-body {
+    margin-left: 20px;
+}
+.mt-header-text {
+    color: var(--oa-fg-1);
+    font-weight: bold;
+}
+
+
+.schema {
+}
 .s-additional-props {}
 .s-props            {}
 .s-title {

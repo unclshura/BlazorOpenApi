@@ -3,7 +3,7 @@
 @if ( ResolvedValue != null )
 {
     <table class="schema">
-        <SchemaChildControl Value="@ResolvedValue" Title="@Title" Required="@Required" />
+        <SchemaChildControl Value="@ResolvedValue" Title="@Title" Required="@Required" Collapsed="@Collapsed"/>
     </table>
 }
 
@@ -15,6 +15,8 @@
     public string? Title { get; set; }
     [Parameter]
     public bool Required { get; set; }
+    [Parameter]
+    public bool Collapsed { get; set; } = true;
 
     [CascadingParameter]
     public OpenApiDocument? Api { get; set; }

@@ -1,0 +1,26 @@
+@using Microsoft.OpenApi.Models
+
+@if (Value != null)
+{
+    <div class="mt-body">
+        <div class="mt-header-text">@Key</div>
+        <SchemaControl Value="@Value.Schema" Collapsed="false"/>
+        <div class="p-body">
+            <ExampleControl Value="@Value.Example" />
+            @if (Value.Examples.Count > 0)
+            {
+                foreach (var (n, v) in Value.Examples)
+                {
+                    <ExampleControl Example="@v" Name="@n" />
+                }
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string? Key { get; set; }
+    [Parameter]
+    public OpenApiMediaType? Value { get; set; }
+}

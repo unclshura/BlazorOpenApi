@@ -26,7 +26,7 @@
                                 </div>
 
                                 <div class="p-body">
-                                    <SchemaControl Value="@val.Schema" />
+                                    <SchemaControl Value="@val.Schema" Collapsed="false" />
 
                                     @if (val.Content.Count > 0)
                                     {
@@ -36,7 +36,7 @@
                                                 <tr>
                                                     <td>@k</td>
                                                     <td>
-                                                        <SchemaControl Value="@v.Schema" />
+                                                        <SchemaControl Value="@v.Schema" Collapsed="false" />
                                                         @if (v.Encoding.Count > 0)
                                                         {
                                                             <table class="r-encoding">
@@ -91,7 +91,7 @@
             {
                 <div class="p-name">@key</div>
                 <div class="p-body">
-                    <SchemaControl Value="@val.Schema"/>
+                    <SchemaControl Value="@val.Schema" Collapsed="false" />
                 </div>
                 
             }

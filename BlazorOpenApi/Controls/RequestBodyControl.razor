@@ -1,0 +1,20 @@
+@using Microsoft.OpenApi.Models
+
+@if (Value != null)
+{
+    <div class="request">
+        <div class="rb-title">Request body</div>
+        <div class="rb-body">
+            <MarkdownControl Value="@Value.Description" />
+        @foreach ( var media in Value.Content)
+        {
+            <MediaTypeControl Key="@media.Key" Value="@media.Value" />
+        }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public OpenApiRequestBody? Value { get; set; }
+}

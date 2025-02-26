@@ -6,7 +6,7 @@
         <td>
             @if (Value.Type == "array")
             {
-                <Expander HeaderClass="s-type" Class="s-bg-odd" Title="@ArrayText">
+                <Expander HeaderClass="s-type" Class="s-bg-odd" Title="@ArrayText" Collapsed="@Collapsed">
                     <div class="s-nested">
                         <SchemaControl Value="@Value.Items" />
                     </div>
@@ -14,7 +14,7 @@
             }
             else if (Value.Type == "object")
             {
-                <Expander HeaderClass="s-type" Class="s-bg-odd" Title="@ObjectText">
+                <Expander HeaderClass="s-type" Class="s-bg-odd" Title="@ObjectText" Collapsed="@Collapsed">
                     <div class="s-props s-nested">
                         <table class="schema">
                             @foreach (var p in Value.Properties)
@@ -63,6 +63,8 @@
     public string? Title { get; set; }
     [Parameter]
     public bool Required { get; set; }
+    [Parameter]
+    public bool Collapsed { get; set; } = true;
 
     private string TitleText => (string.IsNullOrWhiteSpace(Title) ? Value?.Title : Title) ?? "";
 
@@ -74,11 +76,10 @@
                 return "";
 
             var nullable = Value.Nullable ? "?" : "";
-            var itemsType = $"{Value.Items?.Type ?? "-string-"}{nullable}";
 
             if (Value.MinItems != null || Value.MaxItems != null)
-                return $"{itemsType} [{(Value.MinItems == null ? "" : Value.MinItems.Value)}..{(Value.MaxItems == null ? "" : Value.MaxItems.Value)}]";
-            return $"{itemsType} []";
+                return $"array{nullable} [{(Value.MinItems == null ? "" : Value.MinItems.Value)}..{(Value.MaxItems == null ? "" : Value.MaxItems.Value)}]";
+            return $"array{nullable} []";
         }
     }
 
