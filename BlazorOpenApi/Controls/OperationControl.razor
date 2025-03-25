@@ -51,6 +51,11 @@
                 <ParametersControl Value="@Value.Parameters"/>
                 <RequestBodyControl Value="@Value.RequestBody"/>
                 <ResponsesControl Value="@Value.Responses" />
+
+                <div class="example-data">
+                    <h3>Example Data</h3>
+                    <pre>@GenerateExampleData()</pre>
+                </div>
             }
         </div>
     }
@@ -72,5 +77,91 @@
     {
         _expanded = !_expanded;
         StateHasChanged();
+    }
+
+    private string GenerateExampleData()
+    {
+        if (Value == null)
+        {
+            return string.Empty;
+        }
+
+        var exampleData = new Dictionary<string, object>();
+
+        // Generate example data for parameters
+        foreach (var parameter in Value.Parameters)
+        {
+            if (parameter.Example != null)
+            {
+                exampleData[parameter.Name] = parameter.Example;
+            }
+            else if (parameter.Schema?.Example != null)
+            {
+                exampleData[parameter.Name] = parameter.Schema.Example;
+            }
+            else
+            {
+                exampleData[parameter.Name] = GenerateExampleFromSchema(parameter.Schema);
+            }
+        }
+
+        // Generate example data for request body
+        if (Value.RequestBody?.Content != null)
+        {
+            foreach (var content in Value.RequestBody.Content)
+            {
+                if (content.Value.Example != null)
+                {
+                    exampleData[content.Key] = content.Value.Example;
+                }
+                else if (content.Value.Schema?.Example != null)
+                {
+                    exampleData[content.Key] = content.Value.Schema.Example;
+                }
+                else
+                {
+                    exampleData[content.Key] = GenerateExampleFromSchema(content.Value.Schema);
+                }
+            }
+        }
+
+        return JsonSerializer.Serialize(exampleData, new JsonSerializerOptions { WriteIndented = true });
+    }
+
+    private object GenerateExampleFromSchema(OpenApiSchema? schema)
+    {
+        if (schema == null)
+        {
+            return new object();
+        }
+
+        if (schema.Type == "object" && schema.Properties != null)
+        {
+            var obj = new Dictionary<string, object>();
+            foreach (var property in schema.Properties)
+            {
+                obj[property.Key] = GenerateExampleFromSchema(property.Value);
+            }
+            return obj;
+        }
+
+        if (schema.Type == "array" && schema.Items != null)
+        {
+            return new[] { GenerateExampleFromSchema(schema.Items) };
+        }
+
+        return schema.Default ?? schema.Example ?? GetDefaultValueForType(schema.Type);
+    }
+
+    private object GetDefaultValueForType(string? type)
+    {
+        return type switch
+        {
+            "string" => "string",
+            "integer" => 0,
+            "number" => 0.0,
+            "boolean" => false,
+            _ => new object()
+        };
     }
 }
