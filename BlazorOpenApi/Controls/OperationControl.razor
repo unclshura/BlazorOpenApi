@@ -48,10 +48,18 @@
                 <RequestBodyControl Value="@Value.RequestBody"/>
                 <ResponsesControl Value="@Value.Responses" />
 
-                <div class="example-data">
-                    <h3>Example Data</h3>
-                    <pre>@GenerateExampleData()</pre>
-                </div>
+                @if (true)
+                {
+                    var example = GenerateExampleData();
+                    if ( !string.IsNullOrWhiteSpace(example) )
+                    {
+                        <div class="example-data">
+                            <h3>Example Data</h3>
+                            <pre>@GenerateExampleData()</pre>
+                        </div>
+                    }
+                
+                }
             }
         </div>
     }
@@ -85,7 +93,7 @@
         var exampleData = new Dictionary<string, object>();
 
         // Generate example data for parameters
-        foreach (var parameter in Value.Parameters)
+        foreach (var parameter in Value.Parameters.Where(x => x.In == ParameterLocation.Query))
         {
             if (parameter.Example != null)
             {
@@ -121,7 +129,10 @@
             }
         }
 
-        return JsonSerializer.Serialize(exampleData, new JsonSerializerOptions { WriteIndented = true });
+        return exampleData.Count == 0 
+            ? "" 
+            : JsonSerializer.Serialize(exampleData, new JsonSerializerOptions { WriteIndented = true })
+            ;
     }
 
     private object GenerateExampleFromSchema(OpenApiSchema? schema)
@@ -153,11 +164,11 @@
     {
         return type switch
         {
-            "string" => "string",
+            "string"  => "string",
             "integer" => 0,
-            "number" => 0.0,
+            "number"  => 0.0,
             "boolean" => false,
-            _ => new object()
+            _         => new object()
         };
     }
 }

@@ -2,31 +2,36 @@
 @using Microsoft.OpenApi.Models
 @using Microsoft.OpenApi.Readers
 
+
 @if (Palette != null )
 {
     @PaletteStr
 }
 
 <div class="openapi-ui">
-    <CascadingValue Value="@_api">
-        <HeaderControl Value="@_api.Info" DownloadUrl="@Url"/>
-        <ServersControl Value="@_api.Servers" />
-        @if (_api.Paths?.Count > 0)
-        {
-            <h2>Endpoints</h2>
-            foreach (var path in _api.Paths)
+    <CascadingValue Value="@_api" IsFixed="true">
+        <CascadingValue Name="OpenAPIUI_ExpandoTree" Value="_tree" IsFixed="true">
+
+            <HeaderControl Value="@_api.Info" DownloadUrl="@Url" />
+            <ServersControl Value="@_api.Servers" />
+            @if (_api.Paths?.Count > 0)
             {
-                if (!string.IsNullOrWhiteSpace(path.Key) || path.Value != null)
+                <h2>Endpoints</h2>
+                foreach (var path in _api.Paths)
                 {
-                    <PathControl Key="@path.Key" Value="@path.Value" />
+                    if (!string.IsNullOrWhiteSpace(path.Key) || path.Value != null)
+                    {
+                        <PathControl Key="@path.Key" Value="@path.Value" />
+                    }
                 }
             }
-        }
-        @if (_api.Components != null)
-        {
-            <h2>Components</h2>
-            <ComponentsControl Value="@_api.Components"/>
-        }
+            @if (_api.Components != null)
+            {
+                <h2>Components</h2>
+                <ComponentsControl Value="@_api.Components" />
+            }
+
+        </CascadingValue>
     </CascadingValue>
 </div>
 
@@ -35,8 +40,11 @@
     [Parameter] public string Json { get; set; } = "";
     [Parameter] public OpenApiUiPalette? Palette { get; set; }
 
+
     private string _loadedFor = "";
+
     private OpenApiDocument _api = new();
+    private IExpandoTree _tree = new ExpandoTree();
 
     private MarkupString PaletteStr => Palette?.AsMarkupString ?? new();
 
@@ -98,4 +106,6 @@
             _api = new();
         }
     }
+
+
 }
