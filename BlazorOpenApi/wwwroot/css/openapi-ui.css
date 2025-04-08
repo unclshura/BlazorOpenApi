@@ -18,6 +18,10 @@
     font-family: monospace;
     font-size: var(--oa-font-small);
     color: lightseagreen;
+    background-color: var(--oa-bg-darkest);
+    overflow: auto;
+    field-sizing: content;
+    padding: 10px;
 }
 .e-name             {}
 .e-title            {}
