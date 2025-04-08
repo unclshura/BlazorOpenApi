@@ -42,6 +42,5 @@
     [Parameter]
     public OpenApiComponents? Value { get; set; }
 
-    private IList<OpenApiParameter> ToList(OpenApiParameter val)
-     => new List<OpenApiParameter>() { val };
+    private IList<OpenApiParameter> ToList(OpenApiParameter val) => new List<OpenApiParameter>() { val };
 }

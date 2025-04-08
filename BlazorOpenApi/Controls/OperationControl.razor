@@ -54,9 +54,9 @@
                         var example = GenerateExampleData();
                         if (!string.IsNullOrWhiteSpace(example))
                         {
-                            <div class="example-data">
-                                <h3>Example Data</h3>
-                                <pre>@GenerateExampleData()</pre>
+                            <div class="example">
+                                <h3 class="e-title">Example Data</h3>
+                                <pre class="e-item">@GenerateExampleData()</pre>
                             </div>
                         }
 
@@ -133,7 +133,9 @@
                 }
                 else
                 {
-                    exampleData[content.Key] = GenerateExampleFromSchema(content.Value.Schema);
+                    var ex = GenerateExampleFromSchema(content.Value.Schema);
+                    if ( ex != null )
+                        exampleData[content.Key] = ex;
                 }
             }
         }
@@ -144,32 +146,39 @@
             ;
     }
 
-    private object GenerateExampleFromSchema(OpenApiSchema? schema)
+    private object? GenerateExampleFromSchema(OpenApiSchema? schema)
     {
         if (schema == null)
         {
-            return new object();
+            return null;
         }
 
         if (schema.Type == "object" && schema.Properties != null)
         {
-            var obj = new Dictionary<string, object>();
+            var obj = new Dictionary<string, object?>();
             foreach (var property in schema.Properties)
             {
-                obj[property.Key] = GenerateExampleFromSchema(property.Value);
+                var ex = GenerateExampleFromSchema(property.Value);
+                if (ex != null)
+                    obj[property.Key] = ex;
             }
+            if ( obj.Count == 0 )
+                return null;
             return obj;
         }
 
         if (schema.Type == "array" && schema.Items != null)
         {
-            return new[] { GenerateExampleFromSchema(schema.Items) };
+            var ex = GenerateExampleFromSchema(schema.Items);
+            if (ex == null)
+                return null;
+            return new[] { ex };
         }
 
         return schema.Default ?? schema.Example ?? GetDefaultValueForType(schema.Type);
     }
 
-    private object GetDefaultValueForType(string? type)
+    private object? GetDefaultValueForType(string? type)
     {
         return type switch
         {
@@ -177,7 +186,7 @@
             "integer" => 0,
             "number"  => 0.0,
             "boolean" => false,
-            _         => new object()
+            _         => null
         };
     }
 }

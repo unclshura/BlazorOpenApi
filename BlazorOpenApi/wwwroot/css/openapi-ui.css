@@ -2,11 +2,23 @@
     margin-left: 20px;
 }
 
+.toc-text {
+    cursor: pointer;
+}
+
+.toc-text:hover {
+    text-decoration: underline !important;
+}
+
 .descriminator {
 }
 
 .example            {}
-.e-item             {}
+.e-item {
+    font-family: monospace;
+    font-size: var(--oa-font-small);
+    color: lightseagreen;
+}
 .e-name             {}
 .e-title            {}
 
@@ -18,6 +30,7 @@
 .ex-header {
     display: flex;
     flex-direction: row;
+    cursor: pointer;
 }
 
 .header             {}
@@ -73,6 +86,7 @@
     padding: 5px;
     border-radius: 5px;
     color: var(--oa-fg-lighter);
+    cursor: pointer;
 }
 .op-summary {
     width: 100%;

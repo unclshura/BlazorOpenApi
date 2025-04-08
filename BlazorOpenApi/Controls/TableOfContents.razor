@@ -2,7 +2,7 @@
 @implements IDisposable
 
 <div class="@Class">
-    <a @onclick="(async() => await ScrolltoAnchor())">@Title</a>
+    <a class="toc-text" @onclick="(async() => await ScrolltoAnchor())">@Title</a>
     @foreach (var child in Tree.GetChildren(Anchor))
     {
         <TableOfContents Title="@child.Name" Anchor="@child.Anchor" class="toc-level" Tree="@Tree"/>

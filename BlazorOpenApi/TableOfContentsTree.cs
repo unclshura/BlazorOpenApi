@@ -11,6 +11,12 @@ internal class TableOfContentsTree : ITableOfContentsTree
 
     public event EventHandler Changed;
 
+    public void Clear()
+    {
+        _nodes.Clear();
+        _order.Clear();
+    }
+
     public void Add(string name, string anchor, string parentAnchor, bool collapsed)
     {
         if (_nodes.ContainsKey(anchor))

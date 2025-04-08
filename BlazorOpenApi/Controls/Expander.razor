@@ -1,8 +1,8 @@
 ﻿<CascadingValue Name="OpenAPIUI_TOC_Parent" Value="_anchor">
     <div id="@_anchor" class="expander @Class">
-        <div class="ex-header @HeaderClass">
+        <div class="ex-header @HeaderClass" onclick="@(() => Toggle())">
             @Title
-            <div onclick="@(() => Toggle())">
+            <div>
                 @if (Collapsed)
                 {
                     <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

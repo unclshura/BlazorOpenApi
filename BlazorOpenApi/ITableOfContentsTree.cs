@@ -20,6 +20,7 @@ public interface ITableOfContentsTree
 {
     public event EventHandler Changed;
 
+    void Clear();
     void Add(string name, string anchor, string parentAnchor, bool collapsed);
     void Collapse(string anchor, bool collapsed);
     bool IsCollapsed(string anchor);
