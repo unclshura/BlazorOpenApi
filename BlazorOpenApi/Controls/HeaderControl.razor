@@ -1,38 +1,42 @@
 ﻿@if (Value != null)
 {
-    <div class="header">
-        <h1 class="h-title">@Value.Title <span class="h-version">@Value.Version</span></h1>
-        <div class="h-contact">
-                @if (!string.IsNullOrWhiteSpace(Value.Contact?.Name))
+    <TocMember Title="Header">
+
+        <div class="header">
+            <h1 class="h-title">@Value.Title <span class="h-version">@Value.Version</span></h1>
+            <div class="h-contact">
+                    @if (!string.IsNullOrWhiteSpace(Value.Contact?.Name))
+                {
+                    <div class="h-name">
+                            @Value.Contact.Name
+                        </div>
+                }
+                    @if (Value.Contact?.Url != null)
+                {
+                    <div class="h-url">
+                            @Value.Contact.Url
+                        </div>
+                }
+                    @if (Value.Contact?.Email != null)
+                {
+                    <div class="h-email">
+                            @Value.Contact.Email
+                        </div>
+                }
+                </div>
+                @if (!string.IsNullOrWhiteSpace(DownloadUrl))
             {
-                <div class="h-name">
-                        @Value.Contact.Name
-                    </div>
-            }
-                @if (Value.Contact?.Url != null)
-            {
-                <div class="h-url">
-                        @Value.Contact.Url
-                    </div>
-            }
-                @if (Value.Contact?.Email != null)
-            {
-                <div class="h-email">
-                        @Value.Contact.Email
-                    </div>
+                <a class="h-source-url" href="@DownloadUrl">@DownloadUrl</a>
             }
             </div>
-            @if (!string.IsNullOrWhiteSpace(DownloadUrl))
-        {
-            <a class="h-source-url" href="@DownloadUrl">@DownloadUrl</a>
-        }
-        </div>
 
-    @if (!string.IsNullOrWhiteSpace(Value.Description))
-    {
-        <h2>Description</h2>
-        <MarkdownControl Value="@Value.Description"/>
-    }
+        @if (!string.IsNullOrWhiteSpace(Value.Description))
+        {
+            <h2>Description</h2>
+            <MarkdownControl Value="@Value.Description"/>
+        }
+
+    </TocMember>
 }
 
 @code {

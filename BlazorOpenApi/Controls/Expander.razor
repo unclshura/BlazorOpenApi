@@ -1,5 +1,5 @@
-﻿<CascadingValue Name="OpenAPIUI_ExpandoTree_Parent" Value="_anchor">
-    <div class="expander @Class">
+﻿<CascadingValue Name="OpenAPIUI_TOC_Parent" Value="_anchor">
+    <div id="@_anchor" class="expander @Class">
         <div class="ex-header @HeaderClass">
             @Title
             <div onclick="@(() => Toggle())">
@@ -29,16 +29,18 @@
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
     [Parameter]
-    public bool Collapsed { get; set; } = true;
+    public bool Collapsed               { get; set; } = true;
     [Parameter]
-    public string Title { get; set; } = "";
+    public string Title                 { get; set; } = "";
     [Parameter]
-    public string HeaderClass { get; set; } = "";
+    public string HeaderClass           { get; set; } = "";
     [Parameter]
-    public string Class { get; set; } = "";
+    public string Class                 { get; set; } = "";
+    [Parameter]
+    public bool AddToTOC                { get; set; } = false;
 
-    [CascadingParameter(Name = "OpenAPIUI_ExpandoTree")]        public IExpandoTree Tree   { get; set; } = null!;
-    [CascadingParameter(Name = "OpenAPIUI_ExpandoTree_Parent")] public string Parent { get; set; } = "";
+    [CascadingParameter(Name = "OpenAPIUI_TOC")]        public ITableOfContentsTree Tree   { get; set; } = null!;
+    [CascadingParameter(Name = "OpenAPIUI_TOC_Parent")] public string               Parent { get; set; } = "";
 
     private string _anchor = $"anc{Random.Shared.Next():X8}";
 
@@ -47,14 +49,19 @@
         if (!firstRender)
             return;
 
-        Tree.Add(Title, _anchor, Parent, Collapsed);
-        Collapsed = Tree.IsCollapsed(Title);
+        if (AddToTOC)
+        {
+            Tree.Add(Title, _anchor, Parent, Collapsed);
+            Collapsed = Tree.IsCollapsed(Title);
+        }
     }
 
     void Toggle()
     {
         Collapsed = !Collapsed;
-        Tree.Collapse(_anchor, Collapsed);
+        if ( AddToTOC )
+            Tree.Collapse(_anchor, Collapsed);
+
         StateHasChanged();
     }
 }

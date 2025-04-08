@@ -1,69 +1,71 @@
-﻿@if (Value != null)
-{
-    <div class="op-header @OperationClass" @onclick="Expand">
-        <div class="op-type">@Operation</div>
-        <div class="spacer op-header-text">-</div>
-        <div class="op-header-text" id="@Value.OperationId">@Endpoint</div>
-        <div class="spacer op-header-text">-</div>
-        <div class="op-summary op-header-text">@Value.Summary</div>
-        @if (Value.Tags.Count > 0)
+﻿<TocMember Title="@TocTitle" Anchor="@_anchor">
+    @if (Value != null)
+    {
+        <div id="@_anchor" class="op-header @OperationClass" @onclick="Expand">
+            <div class="op-type">@Operation</div>
+            <div class="spacer op-header-text">-</div>
+            <div class="op-header-text" id="@Value.OperationId">@Endpoint</div>
+            <div class="spacer op-header-text">-</div>
+            <div class="op-summary op-header-text">@Value.Summary</div>
+            @if (Value.Tags.Count > 0)
+            {
+                <div class="op-tags">
+                    @foreach (var tag in Value.Tags)
+                    {
+                        <Tooltip class="op-tag" TooltipText="@tag.Description">
+                            <Text Class="op-tag-name" Value="@tag.Name" />
+                        </Tooltip>
+                    }
+                </div>
+            }
+            @if (!Collapsed)
+            {
+                <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 15L12 9L6 15" stroke="var(--oa-fg-lighter)" stroke-width="2" />
+                </svg>
+            }
+            else
+            {
+                <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 9L12 15L6 9" stroke="var(--oa-fg-lighter)" stroke-width="2" />
+                </svg>
+            }
+
+        </div>
+        @if (!Collapsed)
         {
-            <div class="op-tags">
-                @foreach (var tag in Value.Tags)
+            <div class="operation">
+
+                @if (Value != null)
                 {
-                    <Tooltip class="op-tag" TooltipText="@tag.Description">
-                        <Text Class="op-tag-name" Value="@tag.Name" />
-                    </Tooltip>
+                    <MarkdownControl Value="@Value.Description" />
+
+                    if (Value.Servers?.Count > 0)
+                    {
+                        <ServersControl Value="@Value.Servers" />
+                    }
+
+                    <ParametersControl Value="@Value.Parameters" />
+                    <RequestBodyControl Value="@Value.RequestBody" />
+                    <ResponsesControl Value="@Value.Responses" />
+
+                    @if (true)
+                    {
+                        var example = GenerateExampleData();
+                        if (!string.IsNullOrWhiteSpace(example))
+                        {
+                            <div class="example-data">
+                                <h3>Example Data</h3>
+                                <pre>@GenerateExampleData()</pre>
+                            </div>
+                        }
+
+                    }
                 }
             </div>
         }
-        @if (_expanded)
-        {
-            <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 15L12 9L6 15" stroke="var(--oa-fg-lighter)" stroke-width="2" />
-            </svg>
-        }
-        else
-        {
-            <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 9L12 15L6 9" stroke="var(--oa-fg-lighter)" stroke-width="2" />
-            </svg>
-        }
-
-    </div>
-    @if ( _expanded )
-    {
-        <div class="operation">
-
-            @if (Value != null)
-            {
-                <MarkdownControl Value="@Value.Description" />
-
-                if (Value.Servers?.Count > 0)
-                {
-                    <ServersControl Value="@Value.Servers" />
-                }
-
-                <ParametersControl Value="@Value.Parameters"/>
-                <RequestBodyControl Value="@Value.RequestBody"/>
-                <ResponsesControl Value="@Value.Responses" />
-
-                @if (true)
-                {
-                    var example = GenerateExampleData();
-                    if ( !string.IsNullOrWhiteSpace(example) )
-                    {
-                        <div class="example-data">
-                            <h3>Example Data</h3>
-                            <pre>@GenerateExampleData()</pre>
-                        </div>
-                    }
-                
-                }
-            }
-        </div>
     }
-}
+</TocMember>
 
 @code {
     [Parameter]
@@ -73,13 +75,20 @@
     [Parameter]
     public string Endpoint { get; set; } = "";
 
+    [CascadingParameter(Name = "OpenAPIUI_TOC")] public ITableOfContentsTree Tree { get; set; } = null!;
+    [CascadingParameter(Name = "OpenAPIUI_TOC_Parent")] public string Parent { get; set; } = "";
+
+    private string _anchor = $"op_anc{Random.Shared.Next():X8}";
+    private string TocTitle => $"{Endpoint} - [{Operation.ToString().ToUpper()}] {Value?.Summary}";
+
     private string OperationClass => $"op-{Operation.ToString().ToLower()}";
 
-    private bool _expanded = true;
+    private bool Collapsed => Tree.IsCollapsed(_anchor);
 
     private void Expand()
     {
-        _expanded = !_expanded;
+        var collapsed = !Tree.IsCollapsed(_anchor);
+        Tree.Collapse(_anchor, collapsed);
         StateHasChanged();
     }
 

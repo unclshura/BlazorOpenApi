@@ -20,13 +20,13 @@
             <MudSwitch @bind-Value="@IsDarkMode" Color="MudBlazor.Color.Primary" Class="ma-4" T="bool" Label="Dark Mode" />
         </div>
     </MudDrawer>
-    <MudMainContent>
-        <CascadingValue Value="@IsDarkMode">
-            <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="pt-2">
+    <CascadingValue Value="@IsDarkMode">
+        <MudMainContent>
+            <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
                 @Body
             </MudContainer>
-        </CascadingValue>
-    </MudMainContent>
+        </MudMainContent>
+    </CascadingValue>
 </MudLayout>
 
 @code {

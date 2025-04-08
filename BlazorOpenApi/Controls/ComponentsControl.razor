@@ -2,33 +2,39 @@
 {
     @if (Value.Schemas?.Count > 0)
     {
-        <h3>Schemas</h3>
-        @foreach (var (name, val) in Value.Schemas)
-        {
-            <h4>@name</h4>
-            <SchemaControl Value="@val"/>
-        }
+        <TocMember Title="Schemas">
+            <h3>Schemas</h3>
+            @foreach (var (name, val) in Value.Schemas)
+            {
+                <h4>@name</h4>
+                <SchemaControl Value="@val"/>
+            }
+        </TocMember>
     }
 
     <ResponsesControl Value="@Value.Responses"/>
 
     @if (Value.Parameters?.Count > 0)
     {
+        <TocMember Title="Parameters">
         <h3>Parameters</h3>
         @foreach (var (name, val) in Value.Parameters)
         {
             <h4>@name</h4>
             <ParametersControl Value="@ToList(val)" />
         }
+        </TocMember>
     }
 
     @if (Value.Examples?.Count > 0)
     {
-        <h3>Examples</h3>
-        @foreach (var (name, val) in Value.Examples)
-        {
-            <ExampleControl Example="@val" Name="@name"/>
-        }
+        <TocMember Title="Examples">
+            <h3>Examples</h3>
+            @foreach (var (name, val) in Value.Examples)
+            {
+                <ExampleControl Example="@val" Name="@name"/>
+            }
+        </TocMember>
     }
 }
 

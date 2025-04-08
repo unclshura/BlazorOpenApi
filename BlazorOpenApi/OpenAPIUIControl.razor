@@ -2,6 +2,7 @@
 @using Microsoft.OpenApi.Models
 @using Microsoft.OpenApi.Readers
 
+<script src="_content/BlazorOpenApi/js/BlazorOpenAPI.js"></script>
 
 @if (Palette != null )
 {
@@ -10,43 +11,57 @@
 
 <div class="openapi-ui">
     <CascadingValue Value="@_api" IsFixed="true">
-        <CascadingValue Name="OpenAPIUI_ExpandoTree" Value="_tree" IsFixed="true">
+        <CascadingValue Name="OpenAPIUI_TOC" Value="@_tree" IsFixed="true">
+
+            <TableOfContents Tree="@_tree" />
 
             <HeaderControl Value="@_api.Info" DownloadUrl="@Url" />
             <ServersControl Value="@_api.Servers" />
             @if (_api.Paths?.Count > 0)
             {
-                <h2>Endpoints</h2>
-                foreach (var path in _api.Paths)
-                {
-                    if (!string.IsNullOrWhiteSpace(path.Key) || path.Value != null)
+                <TocMember Title="Endpoints">
+                    <h2>Endpoints</h2>
+                    @foreach (var path in _api.Paths)
                     {
-                        <PathControl Key="@path.Key" Value="@path.Value" />
+                        if (!string.IsNullOrWhiteSpace(path.Key) || path.Value != null)
+                        {
+                            <PathControl Key="@path.Key" Value="@path.Value" />
+                        }
                     }
-                }
+                </TocMember>
             }
             @if (_api.Components != null)
             {
-                <h2>Components</h2>
-                <ComponentsControl Value="@_api.Components" />
+                <TocMember Title="Components">
+                    <h2>Components</h2>
+                    <ComponentsControl Value="@_api.Components" />
+                </TocMember>
             }
 
         </CascadingValue>
     </CascadingValue>
+
 </div>
 
 @code {
-    [Parameter] public string Url { get; set; } = "";
-    [Parameter] public string Json { get; set; } = "";
+    [Parameter] public string Url                { get; set; } = "";
+    [Parameter] public string Json               { get; set; } = "";
     [Parameter] public OpenApiUiPalette? Palette { get; set; }
 
 
     private string _loadedFor = "";
 
     private OpenApiDocument _api = new();
-    private IExpandoTree _tree = new ExpandoTree();
+    private ITableOfContentsTree _tree = new TableOfContentsTree();
 
     private MarkupString PaletteStr => Palette?.AsMarkupString ?? new();
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+        StateHasChanged();
+    }
 
     protected override async Task OnParametersSetAsync()
     {

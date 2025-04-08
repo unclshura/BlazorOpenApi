@@ -1,0 +1,48 @@
+@inject IJSRuntime _js;
+@implements IDisposable
+
+<div class="@Class">
+    <a @onclick="(async() => await ScrolltoAnchor())">@Title</a>
+    @foreach (var child in Tree.GetChildren(Anchor))
+    {
+        <TableOfContents Title="@child.Name" Anchor="@child.Anchor" class="toc-level" Tree="@Tree"/>
+    }
+</div>
+
+@code{
+    [Parameter] public string Class              { get; set; } = "toc-level";
+    [Parameter] public string Anchor             { get; set; } = "";
+    [Parameter] public string Title              { get; set; } = "";
+    [Parameter] public ITableOfContentsTree Tree { get; set; } = null!;
+
+    private string AdaptedTitle => string.IsNullOrWhiteSpace(Title) ? "Root" : Title;
+    private bool _initialized;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (Tree != null && !_initialized)
+        {
+            Tree.Changed += OnTocChanged;
+            _initialized = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        if (Tree != null)
+        {
+            Tree.Changed -= OnTocChanged;
+        }
+    }
+
+    private void OnTocChanged(object? sender, EventArgs e)
+    {
+        StateHasChanged();
+    }
+
+    private async Task ScrolltoAnchor()
+    {
+        await _js.InvokeVoidAsync("ScrollTo", Anchor);
+    }
+}

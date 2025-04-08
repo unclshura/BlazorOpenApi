@@ -1,62 +1,64 @@
 ﻿@if (Value != null && Value.Count > 0)
 {
-    <h2>Servers</h2>
-    <table class="servers">
-        @foreach (var server in Value)
-        {
-            <tr>
-                <td><MarkdownControl Value="@server.Description" /></td>
-                <td><a class="sr-url" href="@server.Url">@server.Url</a></td>
-            </tr>
-            @if (server.Variables?.Count > 0)
+    <TocMember Title="Servers">
+        <h2>Servers</h2>
+        <table class="servers">
+            @foreach (var server in Value)
             {
                 <tr>
-                    <td colspan="2">
-                        <div class="sr-vars">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Description</th>
-                                        <th>Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var (key, val) in server.Variables.OrderBy(x => x.Key))
-                                    {
-                                        <tr>
-                                            <td class="sr-var-name">@key</td>
-                                            <MarkdownControl Value="@val.Description" />
-                                            <td class="sr-var-val">
-                                                <Text Class="sr-default" Value="@val.Default" />
-                                                @if (val.Enum?.Count > 0)
-                                                {
-                                                    <ul class="sr-enum">
-                                                        @foreach (var v in val.Enum)
-                                                        {
-                                                            if (string.IsNullOrWhiteSpace(v))
-                                                            {
-                                                                <li>&lt; empty string &gt;</li>
-                                                            }
-                                                            else
-                                                            {
-                                                                <li>@v</li>
-                                                            }
-                                                        }
-                                                    </ul>
-                                                }
-                                            </td>
-
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
+                    <td><MarkdownControl Value="@server.Description" /></td>
+                    <td><a class="sr-url" href="@server.Url">@server.Url</a></td>
                 </tr>
+                @if (server.Variables?.Count > 0)
+                {
+                    <tr>
+                        <td colspan="2">
+                            <div class="sr-vars">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var (key, val) in server.Variables.OrderBy(x => x.Key))
+                                        {
+                                            <tr>
+                                                <td class="sr-var-name">@key</td>
+                                                <MarkdownControl Value="@val.Description" />
+                                                <td class="sr-var-val">
+                                                    <Text Class="sr-default" Value="@val.Default" />
+                                                    @if (val.Enum?.Count > 0)
+                                                    {
+                                                        <ul class="sr-enum">
+                                                            @foreach (var v in val.Enum)
+                                                            {
+                                                                if (string.IsNullOrWhiteSpace(v))
+                                                                {
+                                                                    <li>&lt; empty string &gt;</li>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <li>@v</li>
+                                                                }
+                                                            }
+                                                        </ul>
+                                                    }
+                                                </td>
+
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                }
             }
-        }
-    </table>
+        </table>
+    </TocMember>
 }
 
 @code {

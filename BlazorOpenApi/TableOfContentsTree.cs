@@ -4,19 +4,26 @@ using System.Linq;
 
 namespace BlazorOpenApi;
 
-internal class ExpandoTree : IExpandoTree
+internal class TableOfContentsTree : ITableOfContentsTree
 {
-    private readonly Dictionary<string, ExpandoTreeNode> _nodes = new();
+    private readonly Dictionary<string, TocTreeNode> _nodes = new();
     private readonly List<string> _order = new();
+
+    public event EventHandler Changed;
 
     public void Add(string name, string anchor, string parentAnchor, bool collapsed)
     {
         if (_nodes.ContainsKey(anchor))
         {
-            throw new InvalidOperationException($"A node with anchor '{anchor}' already exists.");
+            throw new InvalidOperationException($"A node with anchor '{anchor}' already exists for {name}.");
         }
 
-        var node = new ExpandoTreeNode
+        if ( parentAnchor != "" && !_nodes.ContainsKey(parentAnchor))
+        {
+            throw new InvalidOperationException($"A parent anchor '{parentAnchor}' is not registered for {name}.");
+        }
+
+        var node = new TocTreeNode
         {
             Name         = name,
             Anchor       = anchor,
@@ -26,6 +33,11 @@ internal class ExpandoTree : IExpandoTree
 
         _nodes[anchor] = node;
         _order.Add(anchor);
+
+        if ( Changed != null )
+        {
+            Changed(this, EventArgs.Empty);
+        }
     }
 
     public void Collapse(string anchor, bool collapsed)
@@ -47,7 +59,7 @@ internal class ExpandoTree : IExpandoTree
 
     public bool Exists(string anchor) => _nodes.ContainsKey(anchor);
 
-    public ExpandoTreeNode[] GetChildren(string anchor) => _order
+    public TocTreeNode[] GetChildren(string anchor) => _order
             .Where(x => _nodes[x].ParentAnchor == anchor)
             .Select(x => _nodes[x])
             .ToArray();

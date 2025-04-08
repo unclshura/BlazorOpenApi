@@ -1,0 +1,45 @@
+@if (string.IsNullOrWhiteSpace(Anchor))
+{
+    <CascadingValue Name="OpenAPIUI_TOC_Parent" Value="@_anchor">
+        <div id="@_anchor">
+            @if (ChildContent != null)
+            {
+                @ChildContent
+            }
+        </div>
+    </CascadingValue>
+}
+else
+{
+    <CascadingValue Name="OpenAPIUI_TOC_Parent" Value="@Anchor">
+        <div>
+            @if (ChildContent != null)
+            {
+                @ChildContent
+            }
+        </div>
+    </CascadingValue>
+}
+
+
+@code{
+    [Parameter] public string Title     { get; set; } = "";
+    [Parameter] public string Anchor    { get; set; } = "";
+    [Parameter] public bool   Collapsed { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [CascadingParameter(Name = "OpenAPIUI_TOC")]        public ITableOfContentsTree Tree   { get; set; } = null!;
+    [CascadingParameter(Name = "OpenAPIUI_TOC_Parent")] public string               Parent { get; set; } = "";
+
+    private string _anchor = $"anc{Random.Shared.Next():X8}";
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        Tree.Add(Title, string.IsNullOrWhiteSpace(Anchor) ? _anchor : Anchor, Parent, Collapsed);
+    }
+
+}
