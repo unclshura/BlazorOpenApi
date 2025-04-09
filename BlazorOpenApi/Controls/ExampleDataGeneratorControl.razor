@@ -1,0 +1,186 @@
+@if (!string.IsNullOrWhiteSpace(_exampleForParameters) || _exampleForRequests.Count > 0 )
+{
+    <div class="example">
+        <h3 class="e-title">Example request body</h3>
+        @if (!string.IsNullOrWhiteSpace(_exampleForParameters))
+        {
+            <textarea type="text" readonly multiple rows="20" class="e-item">@_exampleForParameters</textarea>
+        }
+        @foreach (var (mediaType, example) in _exampleForRequests)
+        {
+            @* <div class="mt-header-text">@mediaType</div> *@
+            <textarea type="text" readonly multiple rows="20" class="e-item">@example</textarea>
+        }
+    </div>
+}
+
+
+
+@code{
+    [Parameter]
+    public OpenApiOperation? Value { get; set; }
+
+    private string _exampleForParameters = string.Empty;
+    private List<(string MediaType, string Example)> _exampleForRequests = [];
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (Value == null)
+            return;
+        _exampleForParameters = GenerateExampleForParameters();
+        _exampleForRequests = GenerateExampleDataForRequests();
+    }
+
+    private string GenerateExampleForParameters()
+    {
+        if (Value == null)
+        {
+            return string.Empty;
+        }
+
+        var exampleData = new Dictionary<string, object>();
+
+        // Generate example data for parameters
+        foreach (var parameter in Value.Parameters.Where(x => x.In == ParameterLocation.Query))
+        {
+            if (parameter.Example != null)
+            {
+                exampleData[parameter.Name] = parameter.Example;
+            }
+            else if (parameter.Schema?.Example != null)
+            {
+                exampleData[parameter.Name] = parameter.Schema.Example;
+            }
+            else
+            {
+                exampleData[parameter.Name] = GenerateExampleFromSchema(parameter.Schema);
+            }
+        }
+
+        return exampleData.Count == 0
+            ? ""
+            : JsonSerializer.Serialize(exampleData, new JsonSerializerOptions { WriteIndented = true })
+            ;
+    }
+
+    private List<(string MediaType, string Example)> GenerateExampleDataForRequests()
+    {
+        if (Value == null)
+        {
+            return [];
+        }
+
+        var exampleData = new Dictionary<string, object>();
+
+        // Generate example data for request body
+        if (Value.RequestBody?.Content != null)
+        {
+            foreach (var content in Value.RequestBody.Content)
+            {
+                if (content.Value.Example != null)
+                {
+                    exampleData[content.Key] = content.Value.Example;
+                }
+                else if (content.Value.Schema?.Example != null)
+                {
+                    exampleData[content.Key] = content.Value.Schema.Example;
+                }
+                else
+                {
+                    var ex = GenerateExampleFromSchema(content.Value.Schema);
+                    if (ex != null)
+                        exampleData[content.Key] = ex;
+                }
+            }
+        }
+
+        if (exampleData.Count == 0)
+        {
+            return [];
+        }
+
+        return exampleData
+            .Where(x => x.Key == "application/json")
+            .Select (x => (x.Key, JsonSerializer.Serialize(x.Value, new JsonSerializerOptions { WriteIndented = true })))
+            .ToList()
+            ;
+    }
+
+    private object? GenerateExampleFromSchema(OpenApiSchema? schema)
+    {
+        if (schema == null)
+        {
+            return null;
+        }
+
+        if (schema.Type == "object" && schema.Properties != null)
+        {
+            var obj = new Dictionary<string, object?>();
+            foreach (var property in schema.Properties)
+            {
+                var ex = GenerateExampleFromSchema(property.Value);
+                if (ex != null)
+                    obj[property.Key] = ex;
+            }
+            if (obj.Count == 0)
+                return null;
+            return obj;
+        }
+
+        if (schema.Type == "array" && schema.Items != null)
+        {
+            var ex = GenerateExampleFromSchema(schema.Items);
+            if (ex == null)
+                return null;
+            return new[] { ex };
+        }
+
+        if (schema.Type == "string" && schema.Enum?.Count > 0 )
+        {
+            var ex = string.Join("|", schema.Enum.Cast<OpenApiString>().Select(x=>x.Value));
+            if (schema.Default != null )
+                ex += $" (default: {((OpenApiString)schema.Default).Value})";
+
+            return ex;
+        }
+
+        var primitive = (schema.Example as IOpenApiPrimitive) ?? (schema.Default as IOpenApiPrimitive);
+        if (primitive != null)
+        {
+            var v = (primitive as OpenApiString)?.Value;
+            if (!string.IsNullOrWhiteSpace(v))
+                return v;
+            return GetDefaultValueForType(primitive.PrimitiveType.ToString());
+        }
+
+        return GetDefaultValueForType(schema.Type);
+    }
+
+    private object? GetDefaultValueForType(string? type)
+    {
+        return type?.ToLower() switch
+        {
+            "string"   => GetRandomString(Random.Shared.Next(3, 10)),
+            "byte"     => Random.Shared.Next(0,255),
+            "integer"  => Random.Shared.Next(),
+            "long"     => Random.Shared.Next(),
+            "number"   => Random.Shared.NextDouble(),
+            "float"    => Random.Shared.NextDouble(),
+            "double"   => Random.Shared.NextDouble(),
+            "date"     => $"{Random.Shared.Next(1, 31),00}-{Random.Shared.Next(1, 12),00}-{Random.Shared.Next(1970, 2050)}",
+            "datetime" => $"{Random.Shared.Next(1, 31),00}-{Random.Shared.Next(1, 12),00}-{Random.Shared.Next(1970, 2050)}T{Random.Shared.Next(1, 24),00}:{Random.Shared.Next(1, 60),00}{Random.Shared.Next(1, 60),00}",
+            "boolean"  => Random.Shared.NextDouble() > 0.5 ? "true" : "false",
+            "password" => "******",
+            "binary"   => "<binary data here>",
+            _ => null
+        };
+    }
+
+    private string GetRandomString(int length = 10)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        return new string(Enumerable.Range(1, length).Select(_ => chars[Random.Shared.Next(chars.Length)]).ToArray());
+    }
+
+}
