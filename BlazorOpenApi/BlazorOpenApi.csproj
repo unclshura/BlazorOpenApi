@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
         <IsPackable>true</IsPackable>
-		<Authors>Alexander Shabarshov</Authors>
-		<Description>
-			OpenAPI documentation generator for Blazor applications.
-		</Description>
-		<PackageProjectUrl>https://github.com/unclshura/BlazorOpenApi</PackageProjectUrl>
-		<PackageTags>openapi, c#, blazor, api, ui, rest, web</PackageTags>
+        <Authors>Alexander Shabarshov</Authors>
+        <Description>
+            OpenAPI documentation generator for Blazor applications.
+        </Description>
+        <PackageProjectUrl>https://github.com/unclshura/BlazorOpenApi</PackageProjectUrl>
+        <PackageTags>openapi, c#, blazor, api, ui, rest, web</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-	
+    
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Markdig" />
