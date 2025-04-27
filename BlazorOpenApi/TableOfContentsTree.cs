@@ -9,7 +9,7 @@ internal class TableOfContentsTree : ITableOfContentsTree
     private readonly Dictionary<string, TocTreeNode> _nodes = new();
     private readonly List<string> _order = new();
 
-    public event EventHandler Changed;
+    public event EventHandler? Changed;
 
     public void Clear()
     {

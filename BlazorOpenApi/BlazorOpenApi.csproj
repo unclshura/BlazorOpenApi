@@ -17,8 +17,9 @@
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
-	<ItemGroup>
-		<None Include="README.md" Pack="true" PackagePath="\"/>
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="../README.md" Pack="true" PackagePath="\"/>
+        <None Include="../docs/**" Pack="true" PackagePath="\docs\"/>
+    </ItemGroup>
 
 </Project>

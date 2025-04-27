@@ -54,7 +54,9 @@
             }
             else
             {
-                exampleData[parameter.Name] = GenerateExampleFromSchema(parameter.Schema);
+                var ex = GenerateExampleFromSchema(parameter.Schema);
+                if (ex != null)
+                    exampleData[parameter.Name] = ex;
             }
         }
 

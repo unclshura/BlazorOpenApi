@@ -9,9 +9,9 @@ It is a pure Blazor implementation.
 
 ## Screenshots
 
-[Light mode](docs/light.png)
-[Dark mode](docs/dark.png)
-[Examples generation](docs/example-data.png)]
+![Light mode](docs/light.png){ width=250px }
+![Dark mode](docs/dark.png){ width=250px }
+![Examples generation](docs/example-data.png)]{ width=250px }
 
 ## Installation
 
