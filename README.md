@@ -1,5 +1,7 @@
 # Blazor OpenAPI UI
 
+Author: *unclshura*
+
 This is a Blazor implementation of a SwaggerUI-like interface. It allows you to view your OpenAPI 
 specifications in a user-friendly way. The motication of this project is to provide a Blazor component that can be used in Blazor applications 
 to display OpenAPI specifications. Unlike SwaggerUI, this project does not require any JavaScript dependencies. 
