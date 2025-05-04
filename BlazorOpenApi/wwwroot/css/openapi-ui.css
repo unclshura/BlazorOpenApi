@@ -332,6 +332,16 @@
     border-bottom: 1px dotted black;
 }
 
+.openapi-ui a {
+    text-decoration: none;
+    cursor: pointer;
+    color: var(--oa-fg-link);
+}
+
+.openapi-ui a:hover {
+    color: var(--oa-fg-link-hover);
+}
+
 .openapi-ui .tooltip .tooltiptext {
     visibility: hidden;
     width: fit-content;
@@ -375,16 +385,17 @@
     vertical-align: top;
 }
 
+
 .openapi-ui {
     --oa-bg-lighter: #0000001f;
     --oa-bg-darker: #00000055;
     --oa-bg-darkest: #000000AA;
-
     --oa-fg-normal: #e4e4e4;
     --oa-fg-lighter: #ffffff;
     --oa-fg-darker: #A0A0A0;
     --oa-fg-darkest: #808080;
-
+    --oa-fg-link: var(--oa-fg-1);
+    --oa-fg-link-hover: var(--oa-bg-1);
     --oa-bg-1: #3655a3;
     --oa-bg-2: #7a7620;
     --oa-bg-3: #9f4b1e;
@@ -393,7 +404,6 @@
     --oa-bg-6: #851192;
     --oa-bg-7: #266b67;
     --oa-bg-8: #456f2b;
-
     --oa-fg-1: #7d98de;
     --oa-fg-2: #ded971;
     --oa-fg-3: #eda279;
@@ -402,10 +412,8 @@
     --oa-fg-6: #e571f2;
     --oa-fg-7: #98e6e1;
     --oa-fg-8: #54b319;
-
     --oa-bg-tag: var(--oa-bg-1);
     --oa-fg-tag: var(--oa-fg-lighter);
-    
     --oa-bg-op-get: var(--oa-bg-1);
     --oa-bg-op-put: var(--oa-bg-2);
     --oa-bg-op-post: var(--oa-bg-3);
@@ -414,20 +422,17 @@
     --oa-bg-op-head: var(--oa-bg-6);
     --oa-bg-op-patch: var(--oa-bg-7);
     --oa-bg-op-trace: var(--oa-bg-8);
-
     --oa-bg-header: var(--oa-bg-6);
     --oa-bg-form: var(--oa-bg-7);
     --oa-bg-path: var(--oa-bg-8);
     --oa-bg-cookie: var(--oa-bg-1);
     --oa-bg-query: var(--oa-bg-2);
-
     --oa-bg-matrix: var(--oa-bg-6);
     --oa-bg-label: var(--oa-bg-7);
     --oa-bg-simple: var(--oa-bg-8);
     --oa-bg-spacedelimited: var(--oa-bg-1);
     --oa-bg-pipedelimited: var(--oa-bg-2);
     --oa-bg-deepobject: var(--oa-bg-3);
-    
     --oa-font-small: 12px;
     --oa-font-smaller: 10px;
     --oa-font-large: 16px;

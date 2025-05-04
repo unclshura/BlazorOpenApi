@@ -17,29 +17,30 @@
                 <TableOfContents Tree="@_tree" />
             </Expander>
 
-            <HeaderControl Value="@_api.Info" DownloadUrl="@Url" />
-            <ServersControl Value="@_api.Servers" />
-            @if (_api.Paths?.Count > 0)
-            {
-                <TocMember Title="Endpoints">
-                    <h2>Endpoints</h2>
-                    @foreach (var path in _api.Paths)
-                    {
-                        if (!string.IsNullOrWhiteSpace(path.Key) || path.Value != null)
+            <div class="oa-main-content">
+                <HeaderControl Value="@_api.Info" DownloadUrl="@Url" />
+                <ServersControl Value="@_api.Servers" />
+                @if (_api.Paths?.Count > 0)
+                {
+                    <TocMember Title="Endpoints">
+                        <h2>Endpoints</h2>
+                        @foreach (var path in _api.Paths)
                         {
-                            <PathControl Key="@path.Key" Value="@path.Value" />
+                            if (!string.IsNullOrWhiteSpace(path.Key) || path.Value != null)
+                            {
+                                <PathControl Key="@path.Key" Value="@path.Value" />
+                            }
                         }
-                    }
-                </TocMember>
-            }
-            @if (_api.Components != null)
-            {
-                <TocMember Title="Components">
-                    <h2>Components</h2>
-                    <ComponentsControl Value="@_api.Components" />
-                </TocMember>
-            }
-
+                    </TocMember>
+                }
+                @if (_api.Components != null)
+                {
+                    <TocMember Title="Components">
+                        <h2>Components</h2>
+                        <ComponentsControl Value="@_api.Components" />
+                    </TocMember>
+                }
+            </div>
         </CascadingValue>
     </CascadingValue>
 
