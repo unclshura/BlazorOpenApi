@@ -19,15 +19,17 @@
     [CascadingParameter]
     public OpenApiDocument? Api { get; set; }
 
-    private OpenApiSchema? ResolvedValue
+    private OpenApiSchema? ResolvedValue => Resolve(Value, Api) ?? Value;
+
+    public static OpenApiSchema? Resolve(OpenApiSchema? schema, OpenApiDocument? api)
     {
-        get
+        if (schema == null)
+            return null;
+        if (schema.Reference != null && api != null)
         {
-            if (Api == null || Value?.Reference == null )
-                return Value;
-            if (!Api.Components.Schemas.TryGetValue(Value.Reference.Id, out var resolved))
-                return Value;
-            return resolved;
+            if (api.Components.Schemas.TryGetValue(schema.Reference.Id, out var resolved))
+                return resolved;
         }
+        return schema;
     }
 }

@@ -5,9 +5,24 @@
             @if (Value.Type == "array")
             {
                 <Expander HeaderClass="s-type" Class="s-bg-odd" Title="@ArrayText" Collapsed="@Collapsed">
-                    <div class="s-nested">
-                        <SchemaControl Value="@Value.Items" />
-                    </div>
+                    @if (Value.Items?.Type == "object" && SchemaControl.Resolve(Value.Items, Api)?.Properties != null)
+                    {
+                        @* Skip one level *@
+                        <div class="s-props s-nested">
+                            <table class="schema">
+                                @foreach (var p in SchemaControl.Resolve(Value.Items, Api)!.Properties)
+                                {
+                                    <SchemaChildControl Value="@p.Value" Title="@p.Key" Required="@IsRequired(p.Key)" />
+                                }
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="s-nested">
+                            <SchemaControl Value="@Value.Items" />
+                        </div>
+                    }
                 </Expander>
             }
             else if (Value.Type == "object")
@@ -55,6 +70,8 @@
 }
 
 @code {
+    [CascadingParameter]
+    public OpenApiDocument? Api { get; set; }
     [Parameter]
     public OpenApiSchema? Value { get; set; }
     [Parameter]
@@ -73,11 +90,15 @@
             if (Value?.Type != "array")
                 return "";
 
+            string arrayType = Value.Items?.Type ?? "";
+            if ( Value.Items?.Type != "array" && Value.Items?.Type != "object")
+                arrayType = Value.Items?.Type ?? "array";
+
             var nullable = Value.Nullable ? "?" : "";
 
             if (Value.MinItems != null || Value.MaxItems != null)
-                return $"array{nullable} [{(Value.MinItems == null ? "" : Value.MinItems.Value)}..{(Value.MaxItems == null ? "" : Value.MaxItems.Value)}]";
-            return $"array{nullable} []";
+                return $"{arrayType}{nullable} [{(Value.MinItems == null ? "" : Value.MinItems.Value)}..{(Value.MaxItems == null ? "" : Value.MaxItems.Value)}]";
+            return $"{arrayType}{nullable} []";
         }
     }
 
