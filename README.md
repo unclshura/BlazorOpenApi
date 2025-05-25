@@ -9,9 +9,9 @@ It is a pure Blazor implementation.
 
 ## Screenshots
 
-![Light mode](docs/light.png){ width=250px }
-![Dark mode](docs/dark.png){ width=250px }
-![Examples generation](docs/example-data.png)]{ width=250px }
+![Light mode](https://github.com/unclshura/BlazorOpenApi/blob/master/docs/light.png?raw=true){ width=250px }
+![Dark mode](https://github.com/unclshura/BlazorOpenApi/blob/master/docs/dark.png?raw=true){ width=250px }
+![Examples generation](https://github.com/unclshura/BlazorOpenApi/blob/master/docs/example-data.png?raw=true){ width=250px }
 
 ## Installation
 
@@ -20,12 +20,15 @@ You can install the package from NuGet:
 dotnet add package BlazorOpenApi
 ```
 
-Source code:
-```bash
-Github: https://github.com/unclshura/BlazorOpenApi
-HTTPS: https://github.com/unclshura/BlazorOpenApi.git
-SSH: git@github.com:unclshura/BlazorOpenApi.git
-```
+## Source code
+
+|What    |Where                                           |
+|--------|------------------------------------------------|
+| Github | https://github.com/unclshura/BlazorOpenApi     |
+| HTTPS  | https://github.com/unclshura/BlazorOpenApi.git |
+| SSH    | git@github.com:unclshura/BlazorOpenApi.git     |
+| NuGet  | https://www.nuget.org/packages/BlazorOpenApi/  |
+
 
 ## Features
 
@@ -44,12 +47,12 @@ To use the component, add the following line to your `_Imports.razor` file:
 @using BlazorOpenApi.Controls
 ```
 Then, you can use the component in your Blazor application:
-```razor
+```c#
 <OpenAPIUIControl Url="https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.yaml" />
 ```
 
 To customize the palette you can use something like this:
-```razor
+```c#
 <OpenAPIUIControl Url="@Url" Palette="@TestPalette"/>
 
 @code {
