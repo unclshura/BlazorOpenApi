@@ -9,9 +9,17 @@ It is a pure Blazor implementation.
 
 ## Screenshots
 
-![Light mode](https://github.com/unclshura/BlazorOpenApi/blob/master/docs/light.png?raw=true){ width=250px }
-![Dark mode](https://github.com/unclshura/BlazorOpenApi/blob/master/docs/dark.png?raw=true){ width=250px }
-![Examples generation](https://github.com/unclshura/BlazorOpenApi/blob/master/docs/example-data.png?raw=true){ width=250px }
+Light theme:
+
+![Light mode](https://raw.githubusercontent.com/unclshura/BlazorOpenApi/master/docs/light.png)
+
+Dark Theme:
+
+![Dark mode](https://raw.githubusercontent.com/unclshura/BlazorOpenApi/master/docs/dark.png)
+
+Examples generation:
+
+![Examples generation](https://raw.githubusercontent.com/unclshura/BlazorOpenApi/master/docs/example-data.png)
 
 ## Installation
 
