@@ -84,4 +84,4 @@ To customize the palette you can use something like this:
 The demo application is available in the `Demo` folder - https://github.com/unclshura/BlazorOpenApi/tree/master/Demo. 
 
 # LICENSE
-[MIT](LICENSE)
+[MIT](LICENSE.txt)
